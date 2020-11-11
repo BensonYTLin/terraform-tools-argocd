@@ -63,7 +63,7 @@ set +e
 sleep 2
 count=0
 until kubectl get crd/argocds.argoproj.io 1>/dev/null 2>/dev/null; do
-  if [[ $count -eq 10 ]]; then
+  if [[ $count -eq 100 ]]; then
     echo "Timed out waiting for ArgoCD CRD to be installed"
     exit 1
   fi
@@ -76,7 +76,7 @@ done
 
 count=0
 until kubectl get csv -n "${OPERATOR_NAMESPACE}" | grep -q argocd-operator; do
-  if [[ $count -eq 10 ]]; then
+  if [[ $count -eq 100 ]]; then
     echo "Timed out waiting for ArgoCD CSV install to be started in ${OPERATOR_NAMESPACE}"
     exit 1
   fi
@@ -89,7 +89,7 @@ CSV_NAME=$(kubectl get csv -n "${OPERATOR_NAMESPACE}" -o custom-columns=name:.me
 
 count=0
 until [[ $(kubectl get csv -n "${OPERATOR_NAMESPACE}" "${CSV_NAME}" -o jsonpath='{.status.phase}') == "Succeeded" ]]; do
-  if [[ $count -eq 10 ]]; then
+  if [[ $count -eq 100 ]]; then
     echo "Timed out waiting for ArgoCD CSV to be successfully installed in ${OPERATOR_NAMESPACE}"
     exit 1
   fi
